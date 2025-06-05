@@ -1,4 +1,4 @@
-@Smoke @Login
+@Smoke @Login @login
 Feature: Employee Login to Tata Memorial Hospital Claim Management Portal
 
   As a registered employee
