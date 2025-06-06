@@ -1,4 +1,4 @@
-@Smoke @Login @login
+@Smoke @Login
 Feature: Employee Login to Tata Memorial Hospital Claim Management Portal
 
   As a registered employee
@@ -16,12 +16,14 @@ Feature: Employee Login to Tata Memorial Hospital Claim Management Portal
     Then The user should see <outcome>
 
     Examples:
-      | username  | password  | outcome                                         |
-      | 126267    | 491809    | the Claim Management landing page               |
-      | wronguser | wrongpass | an error message "Invalid Username or Password" |
+      | username  | password  | outcome                                      |
+      | 126267    | 491809    | the Claim Management landing page            |
+      | wronguser | wrongpass | an error message "Wrong User ID / Password." |
 
   @Negative
   Scenario: Login with empty credentials
     When The user leaves the username and password fields empty
     And The user clicks the Sign In button
-    Then The user should see a validation message "Please Enter Employee-Portal User ID & Password"
+    Then The user should see a validation message "Enter your Username" and "Enter your Password"
+
+
