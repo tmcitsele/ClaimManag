@@ -13,5 +13,5 @@ import org.junit.runner.RunWith;
         monochrome = true,
         tags = "@Smoke"  // Optional: run only specific tagged scenarios
 )
-public class TestRunner {
+public class LoginTestRunner {
 }
