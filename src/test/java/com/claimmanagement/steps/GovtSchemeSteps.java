@@ -10,15 +10,20 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.sql.Driver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GovtSchemeSteps {
+
+    private static final Logger log = LoggerFactory.getLogger(GovtSchemeSteps.class);
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -28,7 +33,8 @@ public class GovtSchemeSteps {
 
     @Before
     public void setUp() {
-        System.out.println("=== Setting up driver and wait ===");
+        //System.out.println("=== Setting up driver and wait ===");
+        log.info("=== Setting up driver and wait ===");
         driver = DriverFactory.initDriver();  // Use static method from singleton DriverFactory
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         govtSchemePage = new GovtSchemePage(driver, wait);
@@ -37,13 +43,15 @@ public class GovtSchemeSteps {
 
     @After
     public void tearDown() {
-        System.out.println("=== Quitting driver ===");
+        //System.out.println("=== Quitting driver ===");
+        log.info("=== Quitting driver ===");
         DriverFactory.quitDriver();
     }
 
     @Given("The user logs in with valid credentials")
     public void the_user_logs_in_with_valid_credentials() {
-        System.out.println("Navigating to login page...");
+        //System.out.println("Navigating to login page...");
+        log.info("Navigating to login page...");
         driver.get("https://intranet.tmc.gov.in/msw1/Login.aspx");
 
         // You can still externalize credentials if you want
@@ -54,11 +62,13 @@ public class GovtSchemeSteps {
             // fallback to hardcoded for now or throw error
             username = "126267";
             password = "491809";
-            System.out.println("Using fallback hardcoded credentials.");
+            //System.out.println("Using fallback hardcoded credentials.");
+            log.info("Using fallback hardcoded credentials.");
             // Or throw new RuntimeException("Username or password not set");
         }
 
-        System.out.println("Logging in with username: " + username);
+        //System.out.println("Logging in with username: " + username);
+        log.info("Logging in with username: {}", username);
         loginPage.enterUserName(username);
         loginPage.enterPassword(password);
         loginPage.clickSignIn();
@@ -66,7 +76,8 @@ public class GovtSchemeSteps {
 
     @When("The user hovers over the {string} menu")
     public void the_user_hovers_over_the_menu(String menuName) {
-        System.out.println("Hovering over menu: " + menuName);
+        //System.out.println("Hovering over menu: " + menuName);
+        log.info("Hovering over menu: {}", menuName);
         if ("Govt. Scheme".equalsIgnoreCase(menuName.trim())) {
             govtSchemePage.hoverOverGovtSchemeMenu();
         } else {
@@ -89,8 +100,12 @@ public class GovtSchemeSteps {
     public void the_user_should_see_the_following_options(io.cucumber.datatable.DataTable dataTable) {
         List<String> expectedOptions = dataTable.asList();
         List<String> actualOptions = govtSchemePage.getDropdownOptions();
-        System.out.println("Expected dropdown options: " + expectedOptions);
+        //System.out.println("Expected dropdown options: " + expectedOptions);
 
+        log.info("Expected dropdown options: {}", expectedOptions);
+        log.info("Actual dropdown options: {}", actualOptions);
+
+        // Ignore case differences
         // Convert both lists to lowercase to ignore case issues
         List<String> expectedLower = expectedOptions.stream()
                 .map(String::toLowerCase)
@@ -105,13 +120,15 @@ public class GovtSchemeSteps {
 
     @And("The user selects {string}")
     public void the_user_selects(String optionName) {
-        System.out.println("Selecting dropdown option: " + optionName);
+        //System.out.println("Selecting dropdown option: " + optionName);
+        log.info("Selecting dropdown option: {}", optionName);
         govtSchemePage.selectOption(optionName);
     }
 
     @Then("The user should be redirected to the {string} page")
     public void the_user_should_be_redirected_to_the_page(String expectedPageName) {
-        System.out.println("Waiting to verify redirection to: " + expectedPageName);
+        //System.out.println("Waiting to verify redirection to: " + expectedPageName);
+        log.info("Waiting to verify redirection to: {}", expectedPageName);
         boolean isOnExpectedPage = false;
 
         for (int i = 0; i < 5; i++) {
@@ -126,7 +143,8 @@ public class GovtSchemeSteps {
         }
 
         Assert.assertTrue("Expected to be on page: " + expectedPageName, isOnExpectedPage);
-        System.out.println("Successfully redirected to: " + expectedPageName);
+        //System.out.println("Successfully redirected to: " + expectedPageName);
+        log.info("Successfully redirected to: {}", expectedPageName);
     }
 
 

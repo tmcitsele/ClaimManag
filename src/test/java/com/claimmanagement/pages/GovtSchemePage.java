@@ -4,10 +4,14 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
+
 public class GovtSchemePage {
+
+    private static final Logger log = LoggerFactory.getLogger(GovtSchemePage.class);
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -35,20 +39,24 @@ public class GovtSchemePage {
     }
 
     public void hoverOverGovtSchemeMenu() {
-        System.out.println("Trying to hover over 'Govt. Scheme' menu...");
+        //System.out.println("Trying to hover over 'Govt. Scheme' menu...");
+        log.info("Trying to hover over 'Govt. Scheme' menu...");
         WebElement menu = wait.until(ExpectedConditions.visibilityOfElementLocated(govtSchemeMenu));
         actions.moveToElement(menu).perform();
-        System.out.println("Hovered on menu. Waiting for dropdown options...");
+        //System.out.println("Hovered on menu. Waiting for dropdown options...");
+        log.info("Hovered on menu. Waiting for dropdown options...");
 
 
         try {
             Thread.sleep(500); // Slight delay to allow dropdown to load
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            log.warn("Interrupted while waiting for dropdown options", e);
         }
 
         wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(dropdownOptions));
-        System.out.println("Dropdown options should now be visible.");
+        //System.out.println("Dropdown options should now be visible.");
+        log.info("Dropdown options should now be visible.");
     }
 
 
@@ -68,7 +76,8 @@ public class GovtSchemePage {
     }*/
 
     public List<String> getDropdownOptions() {
-        System.out.println("Fetching all dropdown option texts...");
+        //System.out.println("Fetching all dropdown option texts...");
+        log.info("Fetching all dropdown option texts...");
         List<WebElement> options = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(dropdownOptions));
         List<String> filteredOptions = new ArrayList<>();
 
@@ -81,20 +90,23 @@ public class GovtSchemePage {
             }
 
             filteredOptions.add(text);
-            System.out.println("Found option: " + text);
+            //System.out.println("Found option: " + text);
+            log.info("Found option: {}", text);
         }
 
         return filteredOptions;
     }
 
     public void selectOption(String optionName) {
-        System.out.println("Trying to select option: " + optionName);
+        //System.out.println("Trying to select option: " + optionName);
+        log.info("Trying to select option: {}", optionName);
         List<WebElement> options = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(dropdownOptions));
 
         for (WebElement option : options) {
             String text = option.getText().trim();
             if (text.equalsIgnoreCase(optionName.trim())) {
-                System.out.println("Clicking on option: " + text);
+                //System.out.println("Clicking on option: " + text);
+                log.info("Clicking on option: {}", text);
                 actions.moveToElement(option).perform();
                 option.click();
                 return;
@@ -102,7 +114,8 @@ public class GovtSchemePage {
         }
 
 
-        System.out.println("Option not found in dropdown: " + optionName);
+        //System.out.println("Option not found in dropdown: " + optionName);
+        log.warn("Option not found in dropdown: {}", optionName);
     }
 
     // Assertion is wrong it is checking url but I am providing name of the page
@@ -118,19 +131,23 @@ public class GovtSchemePage {
         String currentUrl = driver.getCurrentUrl().toLowerCase();
         String key = expectedPageName.toLowerCase().trim();
 
-        System.out.println("Current url: " + currentUrl);
-        System.out.println("Checking if URL contains expected fragment for page: " + key);
+        //System.out.println("Current url: " + currentUrl);
+        //System.out.println("Checking if URL contains expected fragment for page: " + key);
+        log.info("Current url: {}", currentUrl);
+        log.info("Checking if URL contains expected fragment for page: {}", key);
 
         if (pageUrlFragments.containsKey(key)){
             String expectedFragment = pageUrlFragments.get(key).toLowerCase();
             boolean result = currentUrl.contains(expectedFragment);
-            System.out.println("Expected URL fragment: " + expectedFragment + " Found? " + result);
+            //System.out.println("Expected URL fragment: " + expectedFragment + " Found? " + result);
+            log.info("Expected URL fragment: {} Found? {}", expectedFragment, result);
             return result;
         }
         else {
             // Fallback: naive check (space removed)
             boolean fallbackResult = currentUrl.contains(key.replace(" ", ""));
-            System.out.println("No mapping found. Using fallback check: " + fallbackResult);
+            //System.out.println("No mapping found. Using fallback check: " + fallbackResult);
+            log.info("No mapping found. Using fallback check: {}", fallbackResult);
             return fallbackResult;
         }
     }

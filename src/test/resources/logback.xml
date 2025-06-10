@@ -1,0 +1,42 @@
+<configuration>
+
+    <!-- Console logging with colors -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Rolling file logging: daily rollover and 7-day retention -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Current active log file -->
+        <file>logs/ClaimManagementAutomation-log.log</file>
+
+        <!-- Rolling policy for daily logs -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Daily rotated files with date in filename -->
+            <fileNamePattern>logs/ClaimManagementAutomation-log-%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <!-- Keep only the last 7 days of logs -->
+            <maxHistory>7</maxHistory>
+
+            <!-- Optional: Limit total size of all logs -->
+            <!-- <totalSizeCap>1GB</totalSizeCap> -->
+        </rollingPolicy>
+
+        <!-- Log formatting -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 🔍 Specific logger for your project package -->
+    <logger name="com.claimmanagement" level="DEBUG"/>
+
+    <!-- Root logger: logs to both console and rolling file -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+
+</configuration>
